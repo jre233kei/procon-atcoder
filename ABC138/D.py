@@ -1,66 +1,36 @@
+ni = lambda: int(input())
+nm = lambda: map(int, input().split())
+nl = lambda: list(map(int, input().split()))
+import sys
 
+sys.setrecursionlimit(500000)
 
-MAX = 200005
+visited = set()
 
-def add_num(nn, x):
-    if nn == -1:
-        return
-    Tree[nn][0] += x
-    for ni in Tree[nn][1]:
-        add_num(ni, x)
+n,q = nm()
 
+tval = [0]*n
+t = [[] for _ in range(n)]
 
-ipt = input().split()
-N = int(ipt[0])
-Q = int(ipt[1])
+for i in range(n-1):
+    a,b = nm()
+    t[a-1].append(b-1)
+    t[b-1].append(a-1)
 
+for i in range(q):
+    p,x = nm()
+    tval[p-1] += x
 
+ans = [0]*n
+def dfs(num,val):
+    visited.add(num)
+    now = val+tval[num]
+    ans[num] = now
+    for nn in t[num]:
+        if nn not in visited:
+            dfs(nn,now)
 
-Tree = []
-for m in range(MAX-1):
-    Tree.append([-1, [-1]])
+dfs(0,0)
 
-nodes = set()
-nodes.add(1)
-
-for i in range(N-1):
-    ipti = input().split()
-    a = int(ipti[0])
-    b = int(ipti[1])
-
-    Tree[a][0] = 0
-    Tree[a][1].insert(0, b)
-    Tree[b][0] = 0
-
-    nodes.add(b)
-
-
-
-for i in range(Q):
-    ipti = input().split()
-    p = int(ipti[0])
-    x = int(ipti[1])
-
-    cands = set()
-
-    Tree[p][0] += x
-
-    for pi in range(p,MAX-1):
-        if Tree[pi] == -1:
-            break
-        for pii in Tree[pi][1]:
-            cands.add(pii)
-    for ci in cands:
-        Tree[ci][0] += x
-
-    #add_num(p, x)
-
-
-for n in nodes:
-    print(Tree[n][0])
-
-
-
-
-
-
+for i in ans:
+    print(i)
